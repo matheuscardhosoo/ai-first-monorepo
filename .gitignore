@@ -1,0 +1,53 @@
+# Monorepo Polyglot .gitignore
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+vendor/
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+target/
+bin/
+obj/
+
+# Build artifacts
+dist/
+build/
+out/
+.next/
+*.tsbuildinfo
+*.egg-info/
+
+# Logs & Debugging
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+ci-logs/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Editor and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# Monorepo cache
+.turbo/
+.cache/

@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "Allows agents to inspect issues, read pull request diffs, and post review comments directly."
+    },
+    "postgres-local": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/monorepo_dev}"
+      ],
+      "description": "Allows agents to inspect local database schemas, types, and migrations to write accurate queries."
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./apps", "./packages", "./docs"],
+      "description": "Exposes workspace directory access within strict boundaries."
+    },
+    "sentry": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sentry"],
+      "env": {
+        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}"
+      },
+      "description": "Used by Skill 06 (Maintenance & SRE) to fetch stack traces and incident payloads directly."
+    }
+  }
+}

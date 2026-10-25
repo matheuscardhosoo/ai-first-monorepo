@@ -1,0 +1,9 @@
+# Cursor Rules
+
+This repository follows the AI-First Monorepo Builder Pipeline.
+Always follow the protocols and state machine defined in AGENTS.md and .ai/skills/00-architecture-standards.md:
+
+1. Never write code without checking if an approved Epic (docs/epics/) and Spec (docs/specs/) exist.
+2. Before modifying files, register locks in docs/plans/ and verify no collisions via `make check-locks`.
+3. In packages/, ensure 100% mocked unit tests. In apps/, write integration tests.
+4. Always use `make test-domain DOMAIN=[path]` to verify code changes.

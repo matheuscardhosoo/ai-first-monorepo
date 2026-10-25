@@ -1,0 +1,49 @@
+name: AI PR Governance & Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  governance-and-quality-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify Multi-Agent Locks
+        run: |
+          make check-locks
+
+      - name: Run Polyglot Linters
+        run: |
+          make lint
+
+      - name: Run Polyglot Type Checks
+        run: |
+          make type-check
+
+      - name: Run Test Suites
+        run: |
+          make test
+
+  agent-review:
+    needs: governance-and-quality-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Audit Monorepo Boundaries & Dual Alignment
+        run: |
+          echo "Auditing PR against Skill 05 (Code Review & Governance)..."
+          # Ensures no packages depend on apps
+          INVALID_IMPORTS=$(grep -rn "from 'apps/" packages/ 2>/dev/null || true)
+          if [ -n "$INVALID_IMPORTS" ]; then
+            echo "ERROR: Monorepo topology violation! Packages must never import from apps/:"
+            echo "$INVALID_IMPORTS"
+            exit 1
+          fi
+          echo "Monorepo topology check passed."
