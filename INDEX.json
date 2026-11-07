@@ -1,0 +1,328 @@
+{
+  "version": "1.1.0",
+  "generated_at": "2026-11-07T01:40:57Z",
+  "total_domains": 8,
+  "domains": {
+    "root": {
+      "domain": "root",
+      "path": "AGENTS.md",
+      "parent": null,
+      "depends_on": [],
+      "title": "Universal AI Agent Specification (AGENTS.md)",
+      "summary": "Welcome to the AI-First Monorepo Builder Pipeline. You are operating as an autonomous software engineering agent inside an AI-native monorepo. This document is the Canonical Source of Truth (SOT) for all AI tools (Google Gemini Antigravity,...",
+      "keywords": [
+        ".ai/cost-optimization.md",
+        ".ai/skills/",
+        "01-business-discovery.md",
+        "01. Discovery",
+        "02-technical-design.md",
+        "02. Architecture",
+        "03-development-execution.md",
+        "03. Execution",
+        "04-test-validation.md",
+        "04. Testing",
+        "05-code-review-governance.md",
+        "05. Governance",
+        "06-maintenance-observability.md",
+        "06. Maintenance",
+        "07-continuous-evaluator.md",
+        "07. Evaluation",
+        "4. **Collision Rule:** If",
+        "AI-First Monorepo Builder Pipeline",
+        "Anti-Flailing Circuit Breaker:",
+        "Architecture",
+        "Audit Conflicts:",
+        "Bounded Tool Execution:",
+        "Canonical Source of Truth (SOT)",
+        "Collision Rule:",
+        "Context Discovery & Retrieval:",
+        "Discovery",
+        "Distributed Context Artifacts:",
+        "Encapsulation:",
+        "Governance",
+        "HALT IMMEDIATELY"
+      ],
+      "sections": [
+        "Overview & Architecture",
+        "1. Core Architecture & Monorepo Topology",
+        "2. The Dual-Grilling SDLC State Machine",
+        "3. The 7 Chronological Agent Skills",
+        "4. Multi-Agent Concurrency & File Lock Engine",
+        "5. Polyglot Command Interface",
+        "6. General Agent Guardrails & Conventions",
+        "7. Cost Optimization & Token Budgeting"
+      ],
+      "estimated_tokens": 2433
+    },
+    "apps/api-gateway": {
+      "domain": "apps/api-gateway",
+      "path": "apps/api-gateway/AGENTS.md",
+      "parent": "apps",
+      "depends_on": [
+        "packages/auth",
+        "packages/common",
+        "packages/database"
+      ],
+      "title": "API Gateway Application Specification (apps/api-gateway/AGENTS.md)",
+      "summary": "This document is the localized context artifact for the deployable apps/api-gateway service.",
+      "keywords": [
+        "Graceful Shutdown:",
+        "Limiting",
+        "Logger",
+        "Middleware",
+        "SIGINT",
+        "SIGTERM",
+        "Specification",
+        "Stateless Scalability:",
+        "Unidirectional Import Rule:",
+        "apps/api-gateway",
+        "packages/auth",
+        "packages/common",
+        "packages/database"
+      ],
+      "sections": [
+        "Overview & Architecture",
+        "1. Domain Responsibility",
+        "2. Invariants & Governance"
+      ],
+      "estimated_tokens": 260
+    },
+    "apps/web": {
+      "domain": "apps/web",
+      "path": "apps/web/AGENTS.md",
+      "parent": "apps",
+      "depends_on": [
+        "apps/api-gateway",
+        "packages/common"
+      ],
+      "title": "Web Application Specification (apps/web/AGENTS.md)",
+      "summary": "This document is the localized context artifact for the deployable apps/web client application.",
+      "keywords": [
+        "Accessibility",
+        "Accessibility (a11y):",
+        "Secure Token Storage:",
+        "Specification",
+        "application",
+        "apps/api-gateway",
+        "apps/web",
+        "localStorage",
+        "packages/database"
+      ],
+      "sections": [
+        "Overview & Architecture",
+        "1. Domain Responsibility",
+        "2. Invariants & Governance"
+      ],
+      "estimated_tokens": 220
+    },
+    "packages/agent-evals": {
+      "domain": "packages/agent-evals",
+      "path": "packages/agent-evals/AGENTS.md",
+      "parent": "packages",
+      "depends_on": [
+        "packages/common",
+        "packages/context-router"
+      ],
+      "title": "Agent Evaluations Domain Specification (packages/agent-evals/AGENTS.md)",
+      "summary": "This document is the localized context artifact for the @monorepo/agent-evals package. All agents working within packages/agent-evals must adhere to these domain rules and boundaries.",
+      "keywords": [
+        "@monorepo/agent-evals",
+        "AGENTS.md",
+        "Accuracy",
+        "CI Gate Enforcement:",
+        "Deterministic Benchmarking:",
+        "Lightweight Execution:",
+        "Rate",
+        "Savings",
+        "Specification",
+        "Time",
+        "Zero Production Coupling:",
+        "apps/*",
+        "code",
+        "packages/agent-evals",
+        "thresholds"
+      ],
+      "sections": [
+        "Overview & Architecture",
+        "1. Domain Responsibility",
+        "2. Invariants & Governance"
+      ],
+      "estimated_tokens": 416
+    },
+    "packages/auth": {
+      "domain": "packages/auth",
+      "path": "packages/auth/AGENTS.md",
+      "parent": "packages",
+      "depends_on": [
+        "packages/common"
+      ],
+      "title": "Auth Domain Specification (packages/auth/AGENTS.md)",
+      "summary": "This document is the localized context artifact for the @monorepo/auth package. All agents working within packages/auth must adhere to these domain rules and boundaries.",
+      "keywords": [
+        "@monorepo/auth",
+        "Control",
+        "Mocked I/O in Unit Tests:",
+        "Short-Lived Access Tokens:",
+        "Specification",
+        "Strict Validation:",
+        "Zero Plaintext Passwords:",
+        "apps/*",
+        "authMiddleware",
+        "authMiddleware(options: AuthOptions): RequestHandler",
+        "checkPermission",
+        "checkPermission(role: Role, requiredPermission: Permission): boolean",
+        "hashPassword",
+        "hashPassword(password: string): Promise<string>",
+        "index.ts",
+        "packages/auth",
+        "packages/common",
+        "packages/database",
+        "signToken",
+        "signToken(payload: AuthUser, secret: string, expiresIn: string): string",
+        "verifyPassword",
+        "verifyPassword(password: string, hash: string): Promise<boolean>",
+        "verifyToken",
+        "verifyToken(token: string, secret: string): TokenPayload"
+      ],
+      "sections": [
+        "Overview & Architecture",
+        "1. Domain Responsibility",
+        "2. Public API Contract",
+        "3. Security & Invariant Rules",
+        "4. Dependencies"
+      ],
+      "estimated_tokens": 443
+    },
+    "packages/common": {
+      "domain": "packages/common",
+      "path": "packages/common/AGENTS.md",
+      "parent": "packages",
+      "depends_on": [],
+      "title": "Common Domain Specification (packages/common/AGENTS.md)",
+      "summary": "This document is the localized context artifact for the @monorepo/common package.",
+      "keywords": [
+        "@monorepo/common",
+        "AppError",
+        "No Heavy Third-Party Bloat:",
+        "NotFoundError",
+        "Pure & Deterministic:",
+        "Specification",
+        "UnauthorizedError",
+        "ValidationError",
+        "Zero Inbound Dependencies:",
+        "apps/*",
+        "classes",
+        "common",
+        "packages/*",
+        "packages/common",
+        "zero monorepo internal dependencies"
+      ],
+      "sections": [
+        "Overview & Architecture",
+        "1. Domain Responsibility",
+        "2. Invariants & Governance"
+      ],
+      "estimated_tokens": 238
+    },
+    "packages/context-router": {
+      "domain": "packages/context-router",
+      "path": "packages/context-router/AGENTS.md",
+      "parent": "packages",
+      "depends_on": [
+        "packages/common"
+      ],
+      "title": "Context Router Domain Specification (packages/context-router/AGENTS.md)",
+      "summary": "This document is the localized context artifact for the @monorepo/context-router package.",
+      "keywords": [
+        ".ai/cache/",
+        "@monorepo/context-router",
+        "AGENTS.md",
+        "Deterministic Output:",
+        "INDEX.json",
+        "Isolated Memory / Storage:",
+        "MAP.md",
+        "Protocol",
+        "Specification",
+        "Sub-15ms Latency:",
+        "Zero Mandatory External Dependencies:",
+        "artifacts",
+        "build_index",
+        "build_index(repo_root: str = None) -> dict",
+        "get_domain_context",
+        "get_domain_context(domain: str) -> str",
+        "get_topological_map",
+        "get_topological_map() -> str",
+        "hashlib",
+        "json",
+        "library",
+        "math",
+        "packages/context-router",
+        "re",
+        "search_context",
+        "search_context(intent: str, top_k: int = 3, domain_filter: str = None) -> dict",
+        "sqlite3"
+      ],
+      "sections": [
+        "Overview & Architecture",
+        "1. Domain Responsibility",
+        "2. Public API Contract",
+        "3. Invariants & Governance"
+      ],
+      "estimated_tokens": 454
+    },
+    "packages/database": {
+      "domain": "packages/database",
+      "path": "packages/database/AGENTS.md",
+      "parent": "packages",
+      "depends_on": [
+        "packages/common"
+      ],
+      "title": "Database Domain Specification (packages/database/AGENTS.md)",
+      "summary": "This document is the localized context artifact for the @monorepo/database package.",
+      "keywords": [
+        "@monorepo/database",
+        "BaseRepository<T>",
+        "Connection Cleanup:",
+        "Migration Discipline:",
+        "No Direct App Imports:",
+        "Parameterized Queries Only:",
+        "Specification",
+        "apps/*",
+        "createConnectionPool",
+        "createConnectionPool(config: DatabaseConfig): Pool",
+        "finally",
+        "healthCheck",
+        "healthCheck(pool: Pool): Promise<boolean>",
+        "index.ts",
+        "management",
+        "packages/auth",
+        "packages/common",
+        "packages/database",
+        "packages/database/migrations/",
+        "runTransaction",
+        "runTransaction<T>(pool: Pool, callback: (client: Client) => Promise<T>): Promise<T>"
+      ],
+      "sections": [
+        "Overview & Architecture",
+        "1. Domain Responsibility",
+        "2. Public API Contract",
+        "3. Invariants & Governance",
+        "4. Dependencies"
+      ],
+      "estimated_tokens": 390
+    }
+  },
+  "hierarchy": {
+    "apps": [
+      "apps/api-gateway",
+      "apps/web"
+    ],
+    "packages": [
+      "packages/agent-evals",
+      "packages/auth",
+      "packages/common",
+      "packages/context-router",
+      "packages/database"
+    ]
+  }
+}

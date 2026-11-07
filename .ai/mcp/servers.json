@@ -22,6 +22,11 @@
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "./apps", "./packages", "./docs"],
       "description": "Exposes workspace directory access within strict boundaries."
     },
+    "context-router": {
+      "command": "python3",
+      "args": ["packages/context-router/context_router/mcp_server.py"],
+      "description": "High-performance hybrid discovery and retrieval routing layer for distributed AGENTS.md files."
+    },
     "sentry": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sentry"],

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "context-router"
+version = "1.0.0"
+description = "Hybrid Discovery and Retrieval Routing Layer for Distributed AGENTS.md"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+neural = ["fastembed>=0.2.0"]
+test = ["pytest>=7.0.0"]
+
+[project.scripts]
+context-router = "context_router.cli:main"

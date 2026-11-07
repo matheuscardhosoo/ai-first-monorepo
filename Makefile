@@ -76,7 +76,7 @@ test: ## Run test suites across all domains
 			echo "Testing $$d..."; \
 			if [ -f "$$d/package.json" ]; then (cd "$$d" && npm test 2>/dev/null || true); fi; \
 			if [ -f "$$d/Makefile" ]; then $(MAKE) -C "$$d" test 2>/dev/null || true; fi; \
-			if [ -f "$$d/pytest.ini" ] || [ -f "$$d/pyproject.toml" ] || [ -f "$$d/requirements.txt" ]; then (cd "$$d" && pytest 2>/dev/null || python -m unittest 2>/dev/null || true); fi; \
+			if [ -f "$$d/pytest.ini" ] || [ -f "$$d/pyproject.toml" ] || [ -f "$$d/requirements.txt" ]; then (cd "$$d" && (pytest 2>/dev/null || python3 -m unittest discover -s tests 2>/dev/null || python3 -m unittest discover 2>/dev/null || python -m unittest 2>/dev/null || true)); fi; \
 			if [ -f "$$d/go.mod" ]; then (cd "$$d" && go test ./... 2>/dev/null || true); fi; \
 			if [ -f "$$d/Cargo.toml" ]; then (cd "$$d" && cargo test 2>/dev/null || true); fi; \
 		fi; \
@@ -91,7 +91,7 @@ test-domain: ## Run test suite for a specific domain (usage: make test-domain DO
 	elif [ -f "$(DOMAIN)/Makefile" ]; then $(MAKE) -C "$(DOMAIN)" test; \
 	elif [ -f "$(DOMAIN)/go.mod" ]; then (cd "$(DOMAIN)" && go test ./...); \
 	elif [ -f "$(DOMAIN)/Cargo.toml" ]; then (cd "$(DOMAIN)" && cargo test); \
-	elif [ -f "$(DOMAIN)/pyproject.toml" ] || [ -f "$(DOMAIN)/requirements.txt" ]; then (cd "$(DOMAIN)" && pytest); \
+	elif [ -f "$(DOMAIN)/pyproject.toml" ] || [ -f "$(DOMAIN)/requirements.txt" ]; then (cd "$(DOMAIN)" && (pytest 2>/dev/null || python3 -m unittest discover -s tests 2>/dev/null || python3 -m unittest discover 2>/dev/null || python3 -m unittest 2>/dev/null || python -m unittest)); \
 	else echo "No supported test harness found in $(DOMAIN)"; fi
 
 .PHONY: build
@@ -137,6 +137,37 @@ context: ## Pack domain files into a clean text stream for AI prompts (usage: ma
 context-budget: ## Estimate token count and file sizes for a domain (usage: make context-budget DOMAIN=packages/auth)
 	@if [ -z "$(DOMAIN)" ]; then echo "Error: DOMAIN variable not set. E.g. make context-budget DOMAIN=packages/auth"; exit 1; fi
 	@python3 .ai/scripts/context-budget.py "$(DOMAIN)"
+
+.PHONY: index-context
+index-context: ## Scan monorepo, regenerate INDEX.json and MAP.md, and update vector index
+	@PYTHONPATH="packages/context-router:$$PYTHONPATH" python3 packages/context-router/context_router/cli.py index
+
+.PHONY: search-context
+search-context: ## Hybrid search across distributed AGENTS.md (usage: make search-context INTENT="Implement auth middleware")
+	@if [ -z "$(INTENT)" ]; then echo "Error: INTENT variable not set. E.g. make search-context INTENT=\"Implement auth middleware\""; exit 1; fi
+	@PYTHONPATH="packages/context-router:$$PYTHONPATH" python3 packages/context-router/context_router/cli.py search "$(INTENT)"
+
+.PHONY: sync-context
+sync-context: ## Granularly sync context index and update modified AGENTS.md files
+	@PYTHONPATH="packages/context-router:$$PYTHONPATH" python3 packages/context-router/context_router/cli.py sync
+
+.PHONY: watch-context
+watch-context: ## Start continuous file watcher to auto-reindex AGENTS.md on change
+	@PYTHONPATH="packages/context-router:$$PYTHONPATH" python3 packages/context-router/context_router/cli.py watch
+
+.PHONY: eval
+eval: ## Run full A/B performance benchmark (Raw Traversal vs Hybrid Router)
+	@PYTHONPATH="packages/agent-evals:packages/context-router:$$PYTHONPATH" python3 packages/agent-evals/agent_evals/runner.py
+
+.PHONY: eval-gate
+eval-gate: ## Run lightweight retrieval accuracy gatekeeper for pre-commit / CI
+	@PYTHONPATH="packages/agent-evals:packages/context-router:$$PYTHONPATH" python3 packages/agent-evals/agent_evals/gatekeeper.py --threshold 0.90
+
+.PHONY: install-hooks
+install-hooks: ## Configure git pre-commit hook to automate index sync and eval gating
+	@git config core.hooksPath .ai/scripts || (cp .ai/scripts/pre-commit-hook.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit 2>/dev/null)
+	@echo "AI-First pre-commit hooks configured successfully."
+
 
 
 

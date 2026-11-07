@@ -20,6 +20,8 @@ This document is the **Canonical Source of Truth (SOT)** for all AI tools (Googl
 │   ├── knowledge/      # Permanent AI memory and lessons learned
 │   ├── rca/            # Bug root cause analyses (Output of Skill 06)
 │   └── evals/          # Tech debt & code quality evaluations (Output of Skill 07)
+├── INDEX.json          # Machine-readable topological map of all distributed AGENTS.md
+├── MAP.md              # Human/agent visual routing map across domain boundaries
 └── .ai/                # Agent skills, prompt templates, and orchestration rules
     ├── skills/         # The 7 SDLC roles and protocols
     ├── templates/      # Standardized frontmatter templates
@@ -27,9 +29,11 @@ This document is the **Canonical Source of Truth (SOT)** for all AI tools (Googl
 ```
 
 ### Topology & Boundary Invariants
+
 1. **Unidirectional Dependency:** `apps/` may import from `packages/`. `packages/` must **NEVER** import from `apps/`.
 2. **Encapsulation:** Packages interact only via declared public contracts (e.g., `index.ts`, `api.go`, `__init__.py`). Deep internal imports are prohibited.
 3. **No Circular Dependencies:** Circular imports between packages will be rejected during governance review.
+4. **Distributed Context Artifacts:** Each domain directory under `apps/*` and `packages/*` maintains its own localized `AGENTS.md` file defining domain-specific constraints, public interfaces, and security rules. Do not inspect every file manually; use the hybrid context routing layer (`search_context` or `INDEX.json` / `MAP.md`).
 
 ---
 
@@ -78,15 +82,15 @@ flowchart TD
 
 Whenever tasked with an objective, identify its SDLC phase and activate the corresponding skill from `.ai/skills/`:
 
-| Phase | Skill File | Primary Role | Mandatory Output | Gate Condition |
-| :--- | :--- | :--- | :--- | :--- |
-| **01. Discovery** | `01-business-discovery.md` | Senior Product Manager | `docs/epics/EPIC-[id].md` | `product_approved` |
-| **02. Architecture**| `02-technical-design.md` | Staff Architect | `docs/specs/SPEC-[id].md`| `tech_approved` |
-| **03. Execution** | `03-development-execution.md` | Senior Software Engineer | `docs/plans/PLAN-[id].md` + Code | `make check-locks` passes |
-| **04. Testing** | `04-test-validation.md` | QA Automation Engineer | Unit, Integration, & E2E Tests | `make test` passes |
-| **05. Governance**| `05-code-review-governance.md`| Lead Governance Engineer| PR Review / Sign-off | Locks released |
-| **06. Maintenance**| `06-maintenance-observability.md`| Principal SRE | `docs/rca/INC-[id].md` | Memory loop update |
-| **07. Evaluation**| `07-continuous-evaluator.md` | Quality Architect | `docs/evals/EVAL-[id].md` | Human approval |
+| Phase                | Skill File                        | Primary Role             | Mandatory Output                 | Gate Condition            |
+| :------------------- | :-------------------------------- | :----------------------- | :------------------------------- | :------------------------ |
+| **01. Discovery**    | `01-business-discovery.md`        | Senior Product Manager   | `docs/epics/EPIC-[id].md`        | `product_approved`        |
+| **02. Architecture** | `02-technical-design.md`          | Staff Architect          | `docs/specs/SPEC-[id].md`        | `tech_approved`           |
+| **03. Execution**    | `03-development-execution.md`     | Senior Software Engineer | `docs/plans/PLAN-[id].md` + Code | `make check-locks` passes |
+| **04. Testing**      | `04-test-validation.md`           | QA Automation Engineer   | Unit, Integration, & E2E Tests   | `make test` passes        |
+| **05. Governance**   | `05-code-review-governance.md`    | Lead Governance Engineer | PR Review / Sign-off             | Locks released            |
+| **06. Maintenance**  | `06-maintenance-observability.md` | Principal SRE            | `docs/rca/INC-[id].md`           | Memory loop update        |
+| **07. Evaluation**   | `07-continuous-evaluator.md`      | Quality Architect        | `docs/evals/EVAL-[id].md`        | Human approval            |
 
 ---
 
@@ -112,14 +116,18 @@ Before modifying or creating any code in `apps/` or `packages/`:
 This monorepo supports multiple programming languages (TypeScript, Python, Go, Rust). All agents must use the unified root `Makefile` targets:
 
 ```bash
-make help                           # List available targets
-make check-locks                    # Audit docs/plans/ for lock collisions
-make lint                           # Run linters across all domains
-make type-check                     # Run type checkers across all domains
-make test                           # Run test suites across all domains
+make help                             # List available targets
+make check-locks                      # Audit docs/plans/ for lock collisions
+make lint                             # Run linters across all domains
+make type-check                       # Run type checkers across all domains
+make test                             # Run test suites across all domains
 make test-domain DOMAIN=packages/auth # Run tests only for a specific domain
-make build                          # Build all apps and packages
-make clean                          # Clean caches and temporary files
+make build                            # Build all apps and packages
+make clean                            # Clean caches and temporary files
+make context DOMAIN=packages/auth     # Pack domain files into a clean text stream
+make context-budget DOMAIN=packages/auth # Estimate token counts and budget alerts
+make index-context                    # Scan monorepo and refresh INDEX.json, MAP.md, and vector index
+make search-context INTENT="query"    # Instant hybrid retrieval of relevant AGENTS.md context
 ```
 
 ---
@@ -135,11 +143,11 @@ make clean                          # Clean caches and temporary files
 
 ## 7. Cost Optimization & Token Budgeting
 
-To maximize engineering output while strictly minimizing inference spend, all agents must adhere to the rules codified in [`.ai/cost-optimization.md`](file:///Users/matheus/Code/side-projects/ai-first-monorepo/.ai/cost-optimization.md):
+To maximize engineering output while strictly minimizing inference spend, all agents must adhere to the rules codified in [`.ai/cost-optimization.md`](./.ai/cost-optimization.md):
 
 1. **Session Isolation (No Monolithic Chats):** Each SDLC phase must run in an isolated agent session. Pass context between phases exclusively through versioned markdown artifacts (`docs/epics/`, `docs/specs/`, `docs/plans/`).
-2. **Model Tiering:** Use deep reasoning/frontier models for Discovery (01), Architecture (02), and Governance (05). Use lightweight, cost-effective models (e.g., Gemini Flash, Claude Haiku) for safe code execution (03), test generation (04), and continuous evals (07).
+2. **Model Tiering:** Use deep reasoning/frontier models (e.g. Anthropic Claude 3.5 Sonnet / 3.7 Sonnet / Opus, Google Gemini Pro, OpenAI o1/GPT-4) for Discovery (01), Architecture (02), and Governance (05). Use lightweight, cost-effective models (e.g., Claude Haiku, Gemini Flash, GPT-4o-mini) for safe code execution (03), test generation (04), and continuous evals (07).
 3. **Anti-Flailing Circuit Breaker:** Agents are permitted a **maximum of 2 automated fix attempts** on failing tests. If still failing after attempt 2, the agent must halt, roll back uncommitted changes, and request human guidance.
-4. **Prompt Caching:** Keep system instructions and standards static at the top of context to leverage provider prompt cache discounts (up to 90% savings).
-5. **Bounded Tool Execution:** Truncate terminal outputs (e.g. `make test 2>&1 | tail -n 50`) and read specific line ranges to prevent context window saturation.
-
+4. **Context Discovery & Retrieval:** Never perform raw, recursive filesystem traversals to discover project rules. Call the context search tool (`search_context(intent)`) or check `INDEX.json` / `MAP.md` to load only the exact localized domain context needed.
+5. **Prompt Caching:** Keep system instructions and standards static at the top of context to leverage provider prompt cache discounts (up to 90% savings).
+6. **Bounded Tool Execution:** Truncate terminal outputs (e.g. `make test 2>&1 | tail -n 50`) and read specific line ranges to prevent context window saturation.
